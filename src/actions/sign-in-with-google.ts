@@ -1,11 +1,21 @@
   "use server"
 
-import { signIn } from "@/lib/auth"
+import { signIn, signOut, auth } from "@/lib/auth"
 
-const signInWithGoogle = async () => {
+
+const authenticateGoogle = async () => {
+
+  const session = await auth()
+
+  if(session){
+    return await signOut({
+      redirectTo: '/login'
+    })
+  }
+
   await signIn("google", {
     redirectTo: "/dashboard",
   })
 }
 
-export { signInWithGoogle }
+export { authenticateGoogle }
