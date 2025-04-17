@@ -2,7 +2,7 @@
 import { authenticateGoogle } from "@/actions/sign-in-with-google"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
-export default async function  LoginPage() {
+const LoginPage = async () => {
 
   const session = await auth()
 
@@ -22,3 +22,5 @@ export default async function  LoginPage() {
     </div>
   )
 }
+
+export default LoginPage

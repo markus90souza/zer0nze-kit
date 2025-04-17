@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
-export default async function  DashboardPage() {
+const DashboardPage = async () => {
 
   const session = await auth()
 
@@ -9,7 +9,6 @@ export default async function  DashboardPage() {
     redirect("/login")
   }
 
-  
   return (
     <div className='h-screen flex flex-col items-center justify-center'>
       <h1 className='text-4xl font-bold'>
@@ -20,3 +19,5 @@ export default async function  DashboardPage() {
     </div>
   )
 }
+
+export default DashboardPage
