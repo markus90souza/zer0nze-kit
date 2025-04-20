@@ -1,5 +1,5 @@
 import { firebaseDB } from '@/lib/firebase';
-import { stripe} from "@/lib/stripe";
+import { stripe  } from "@/lib/stripe";
 import 'server-only';
 
 export async function getOrCreateCustomer(userId: string, userEmail: string) {

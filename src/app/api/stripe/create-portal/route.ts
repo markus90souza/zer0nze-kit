@@ -1,9 +1,9 @@
 import { auth } from "@/lib/auth";
 import { firebaseDB } from "@/lib/firebase";
-import { stripe} from "@/lib/stripe";
+import { stripe } from "@/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   const session = await auth();
 
   const userId = session?.user?.id;
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${request.headers.get('origin')}/`
+      return_url: `${req.headers.get('origin')}/`
     })
 
     return NextResponse.json({ url: portalSession.url });

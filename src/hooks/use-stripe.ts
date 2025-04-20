@@ -1,48 +1,40 @@
-import { useEffect, useState } from "react"
-import { loadStripe, Stripe} from "@stripe/stripe-js"
+import { loadStripe, Stripe } from "@stripe/stripe-js";
+import { useEffect, useState } from "react";
 
+export function useStripe() {
+  const [stripe, setStripe] = useState<Stripe | null>(null);
 
-const useStripe = () => {
-  const [stripe, setStripe] = useState<Stripe | null>(null)
-
-
-  useEffect(() => { 
-    const getStripe = async () => {
-      const stripeInstance = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY!)
+  useEffect(() => {
+    async function loadStripeAsync() {
+      const stripeInstance = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUB_KEY!);
+      setStripe(stripeInstance);
     }
 
-    getStripe()
-  }, [])
+    loadStripeAsync();
+  }, []);
 
-
-  const createPaymentStripeCheckout = async ( stripeData : { testeId: string }) => {
-    if(!stripe) {
-      return
-    }
+  async function createPaymentStripeCheckout(checkoutData: { testeId: string }) {
+    if (!stripe) return;
 
     try {
-
-      const response = await fetch("/api/stripe/create-payment-checkout", {
-        method: "POST",
-       
+      const response = await fetch("/api/stripe/create-pay-checkout", {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(stripeData)
-        
+        body: JSON.stringify(checkoutData),
       })
 
-      const data = await response.json()
+      const data = await response.json();
 
-      await stripe.redirectToCheckout({
-        sessionId: data.id
-      })
-
+      await stripe.redirectToCheckout({ sessionId: data.sessionId })
     } catch (error) {
+      console.error(error);
     }
   }
 
-  const createSubscriptionStripeCheckout = async (checkoutData: { testeId: string }) =>{
+
+  async function createSubscriptionStripeCheckout(checkoutData: { testeId: string }) {
     if (!stripe) return;
 
     try {
@@ -62,7 +54,7 @@ const useStripe = () => {
     }
   }
 
-  const handleCreateStripePortal = async () => {
+  async function handleCreateStripePortal() {
     const response = await fetch("/api/stripe/create-portal", {
       method: 'POST',
       headers: {
@@ -75,13 +67,9 @@ const useStripe = () => {
     window.location.href = data.url;
   }
 
-  
   return {
     createPaymentStripeCheckout,
     createSubscriptionStripeCheckout,
     handleCreateStripePortal,
-  }
-
+  };
 }
-
-export { useStripe }
